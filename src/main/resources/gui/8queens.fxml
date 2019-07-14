@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.Integer?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.TilePane?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="edu.gwu.csci6010.gui.QueensController"
+          prefHeight="400.0" prefWidth="600.0">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="90"/>
+        <ColumnConstraints percentWidth="10"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="90"/>
+    </rowConstraints>
+
+    <!--Controls-->
+    <BorderPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+        <center>
+            <HBox>
+                <Button id="new-game-button" text="New Game" onAction="#newGame"/>
+                <Region prefWidth="20"/>
+                <ComboBox id="board-size-selector" fx:id="boardSizeSelector">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Integer fx:value="8"/>
+                            <Integer fx:value="9"/>
+                            <Integer fx:value="10"/>
+                            <Integer fx:value="11"/>
+                            <Integer fx:value="12"/>
+                        </FXCollections>
+                    </items>
+                    <value>
+                        <Integer fx:value="8"/>
+                    </value>
+                </ComboBox>
+            </HBox>
+        </center>
+    </BorderPane>
+
+    <!--Game Board-->
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <GridPane fx:id="gameBoard"  style="-fx-border-color: black;" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!--Queens-->
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <GridPane id="queen-array" fx:id="queenArray" style="-fx-border-color: purple;" HBox.hgrow="ALWAYS"/>
+    </HBox>
+</GridPane>

@@ -1,0 +1,21 @@
+.dark-wood {
+  -fx-background-image: url('images/dark-wood.jpg');
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: cover, auto;
+  -fx-border-color: black;
+  -fx-border-width: 1;
+}
+
+.light-wood {
+  -fx-background-image: url('images/light-wood.jpg');
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: cover, auto;
+  -fx-border-color: black;
+  -fx-border-width: 1;
+}
+
+.queen{
+  -fx-background-image: url('images/queen-elizabeth-2nd.png');
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: cover, auto;
+}

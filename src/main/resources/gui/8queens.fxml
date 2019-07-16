@@ -1,38 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.Integer?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="edu.gwu.csci6010.gui.QueensController"
           prefHeight="400.0" prefWidth="600.0">
     <columnConstraints>
-        <ColumnConstraints percentWidth="90"/>
-        <ColumnConstraints percentWidth="10"/>
+        <ColumnConstraints percentWidth="100"/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints percentHeight="10"/>
-        <RowConstraints percentHeight="90"/>
+        <RowConstraints percentHeight="5"/>
+        <RowConstraints percentHeight="95"/>
     </rowConstraints>
 
     <!--Controls-->
-    <BorderPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+    <BorderPane GridPane.columnIndex="0" GridPane.rowIndex="0" id="menu">
         <center>
             <HBox>
-                <Button id="new-game-button" text="New Game" onAction="#newGame"/>
+                <Button id="new-game-button" text="New Game" onAction="#newGame" maxHeight="Infinity" prefWidth="100"/>
                 <Region prefWidth="20"/>
-                <ComboBox id="board-size-selector" fx:id="boardSizeSelector">
+                <ComboBox id="board-size-selector" fx:id="boardSizeSelector" maxHeight="Infinity" prefWidth="100">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <Integer fx:value="8"/>
@@ -46,17 +38,26 @@
                         <Integer fx:value="8"/>
                     </value>
                 </ComboBox>
+                <Region prefWidth="20"/>
+                <Button id="new-game-button" text="Solve" onAction="#solve" maxHeight="Infinity" prefWidth="100"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <VBox alignment="CENTER">
+                    <HBox>
+                        <Label fx:id="stausLabel" id="status-label"/>
+                        <Region prefWidth="100"/>
+                        <Label styleClass="queen-text" alignment="TOP_RIGHT">Queens To Be Placed:</Label>
+                        <Region prefWidth="20"/>
+                        <Label styleClass="queen-text" alignment="TOP_RIGHT" fx:id="queensToPlace" maxHeight="Infinity">
+                            8
+                        </Label>
+                    </HBox>
+                </VBox>
             </HBox>
         </center>
     </BorderPane>
 
     <!--Game Board-->
     <HBox GridPane.columnIndex="0" GridPane.rowIndex="1">
-        <GridPane fx:id="gameBoard"  style="-fx-border-color: black;" HBox.hgrow="ALWAYS"/>
-    </HBox>
-
-    <!--Queens-->
-    <HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
-        <GridPane id="queen-array" fx:id="queenArray" style="-fx-border-color: purple;" HBox.hgrow="ALWAYS"/>
+        <GridPane fx:id="gameBoard" style="-fx-border-color: black;" HBox.hgrow="ALWAYS"/>
     </HBox>
 </GridPane>

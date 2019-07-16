@@ -1,25 +1,30 @@
 package edu.gwu.csci6010.gui;
 
-import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
-import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-
-import java.util.Comparator;
-import java.util.NoSuchElementException;
+import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 
 public class QueensController {
 
     @FXML
-    public GridPane gameBoard, queenArray;
+    public GridPane gameBoard;
+
+    @FXML
+    public Label queensToPlace;
+
+    @FXML
+    public Label stausLabel;
 
     @FXML
     private ComboBox boardSizeSelector;
+
+    private BoardController boardController;
 
     private static final int DEFAULT_BOARD_SIZE = 8;
 
@@ -27,26 +32,26 @@ public class QueensController {
     @FXML
     private void initialize() {
         initBoard(DEFAULT_BOARD_SIZE);
-        initQueens(DEFAULT_BOARD_SIZE);
+        boardController = new BoardController(gameBoard, queensToPlace);
     }
 
     @FXML
-    private void newGame(){
+    private void newGame() {
         int boardSize = (int) boardSizeSelector.getValue();
         clearGameBoard();
         initBoard(boardSize);
-        initQueens(boardSize);
+        boardController = new BoardController(gameBoard, queensToPlace);
     }
 
     @FXML
-    private void initBoard(int boardSize){
-        for (int row = 0 ; row < boardSize ; row++ ){
+    private void initBoard(int boardSize) {
+        for (int row = 0; row < boardSize; row++) {
             RowConstraints rowConstraint = new RowConstraints();
             rowConstraint.setFillHeight(true);
             rowConstraint.setVgrow(Priority.ALWAYS);
             gameBoard.getRowConstraints().add(rowConstraint);
         }
-        for (int col = 0 ; col < boardSize; col++ ) {
+        for (int col = 0; col < boardSize; col++) {
             ColumnConstraints columnConstraint = new ColumnConstraints();
             columnConstraint.setFillWidth(true);
             columnConstraint.setHgrow(Priority.ALWAYS);
@@ -57,106 +62,37 @@ public class QueensController {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 String style = color ? "dark-wood" : "light-wood";
-                gameBoard.add(BoardPane.createPane(i, j, style), j, i);
+                BoardPane boardPane = BoardPane.createPane(i, j, style);
+                boardPane.setOnAction(boardclickHandler);
+                gameBoard.add(boardPane, j, i);
                 color = !color;
             }
-            if(boardSize % 2 == 0)
+            if (boardSize % 2 == 0)
                 color = !color;
         }
     }
 
-    private void clearGameBoard(){
+    private void clearGameBoard() {
         gameBoard.getChildren().clear();
         gameBoard.getColumnConstraints().clear();
         gameBoard.getRowConstraints().clear();
-
-        queenArray.getChildren().clear();
-        queenArray.getColumnConstraints().clear();
-        queenArray.getRowConstraints().clear();
+        stausLabel.setText("");
+        stausLabel.getStyleClass().clear();
     }
 
-    private void initQueens(int numQueens){
-        ColumnConstraints columnConstraint = new ColumnConstraints();
-        columnConstraint.setFillWidth(true);
-        columnConstraint.setHgrow(Priority.ALWAYS);
-        queenArray.getColumnConstraints().add(columnConstraint);
+    private EventHandler<ActionEvent> boardclickHandler = actionEvent -> {
+        BoardPane selected = (BoardPane) actionEvent.getTarget();
+        boardController.updateBoard(selected);
+    };
 
-        for(int i = 0; i < numQueens; i++){
-            RowConstraints rowConstraint = new RowConstraints();
-            rowConstraint.setFillHeight(true);
-            rowConstraint.setVgrow(Priority.ALWAYS);
-            queenArray.getRowConstraints().add(rowConstraint);
-        }
-
-        for(int i = 0; i < numQueens; i++){
-            Pane queenPane = new QueenPane(i);
-            draggableQueen(queenPane);
-            queenArray.add(queenPane, 0, i);
+    public void solve() {
+        boolean success = boardController.solve();
+        if (success) {
+            stausLabel.setText("Success");
+            stausLabel.getStyleClass().add("text-success");
+        } else {
+            stausLabel.setText("Failure");
+            stausLabel.getStyleClass().add("text-failure");
         }
     }
-
-    private void draggableQueen(Pane queenPane) {
-        queenPane.setCursor(Cursor.HAND);
-        queenPane.setOnMousePressed(circleOnMousePressedEventHandler);
-        queenPane.setOnMouseDragged(circleOnMouseDraggedEventHandler);
-        queenPane.setOnMouseReleased(stopDrag);
-    }
-
-    double orgSceneX, orgSceneY;
-    double orgTranslateX, orgTranslateY;
-
-    EventHandler<MouseEvent> circleOnMousePressedEventHandler = t -> {
-        orgSceneX = t.getSceneX();
-        orgSceneY = t.getSceneY();
-        orgTranslateX = ((Pane) (t.getSource())).getTranslateX();
-        orgTranslateY = ((Pane) (t.getSource())).getTranslateY();
-    };
-
-    EventHandler<MouseEvent> circleOnMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent t) {
-            double offsetX = t.getSceneX() - orgSceneX;
-            double offsetY = t.getSceneY() - orgSceneY;
-            double newTranslateX = orgTranslateX + offsetX;
-            double newTranslateY = orgTranslateY + offsetY;
-
-            ((Pane) (t.getSource())).setTranslateX(newTranslateX);
-            ((Pane) (t.getSource())).setTranslateY(newTranslateY);
-        }
-    };
-
-    EventHandler<MouseEvent> stopDrag = mouseEvent -> {
-        double currentX = mouseEvent.getSceneX();
-        double currentY = mouseEvent.getSceneY();
-
-//        double currentX = (Pane) mouseEvent.getSource();
-//        double currentY = orgTranslateY;
-        Pane p = (Pane) mouseEvent.getSource();
-
-//
-//        double currentX = p.ge;
-//        double currentY = orgTranslateY;
-//        System.out.println(currentX + "," + currentY);
-
-        ObservableList<Node> allSpaces = gameBoard.getChildren();
-        allSpaces.addAll(queenArray.getChildren());
-        for(Node n : allSpaces){
-            GamePane gp = (GamePane) n;
-            double d = gp.calculateDistance(currentX, currentY);
-            System.out.println(gp + ":" + d);
-        }
-
-
-
-//        GamePane closestSquare = allSpaces.stream()
-//                .map(square -> (GamePane) square)
-//                .filter(GamePane::isOccupied)
-//                .min(Comparator.comparingDouble(s -> s.calculateDistance(currentX, currentY)))
-//                .orElseThrow(NoSuchElementException::new);
-//        System.out.println(closestSquare);
-//
-//        for(Node n : allSpaces){
-//            System.out.println(n.getClass());
-//        }
-    };
 }
